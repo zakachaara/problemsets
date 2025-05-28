@@ -1,17 +1,26 @@
-# Problem A : "Unzip the Zip"
+# Problem A: "Unzip the Zip"
+
+### Input: Standard Input
+### Output: Standard Output
+### Time Limit: 2 seconds
+### Memory Limit: 512 MB
+
+## Problem Description
+
+Your task is to:
+1. Fetch the repository
+2. Extract the data into separate files
+3. Display the README file to the user
+4. Add the test cases to the local directory
+
+The challenge is that the fetched repository always comes in a zipped format.
+
+**Hint:** You'll need to unzip the file.
+
 ---
-### input : standard input
-### output : standard output
-### timelimit : 2s
-### memory limit : 512Mb
 
-Your task is to fetch this reop , extract the data as separate files , add the readme file to the display of the user and finally add the testCases to the local directory
-The problem is the fetched repo is always zipped 
-
-`hint` : unzip the file 
-
----
-#### Exemples : 
-repo : A |- readme.md
-         |- Expected
-         |- Input
+## Example Repository Structure
+A/
+├── README.md
+├── Expected/
+└── Input/
