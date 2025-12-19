@@ -25,7 +25,7 @@ const CODE_FILE_PATH = path.join(__dirname, 'info.txt');
  */
 async function createCode() {
     try {
-        const a = 123457;
+        const a = 783129;
         const b = 1000000;
         
         // Read previous codes 
