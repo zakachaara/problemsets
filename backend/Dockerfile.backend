@@ -1,0 +1,22 @@
+# Backend Dockerfile
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files first (for better caching)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Copy the rest of the backend files
+COPY . .
+
+# Create info.txt if it doesn't exist
+RUN touch info.txt
+
+# Expose backend port
+EXPOSE 3001
+
+# Start the backend
+CMD ["node", "index.js"]

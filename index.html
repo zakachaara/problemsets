@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Challenge</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="overlay" style="display: none"></div>
+
+    <div class="nav-bar">
+      <ul>
+        <li>Home</li>
+        <div id="buttons">
+          <li><button onclick="display_log_in_form()">Log in</button></li>
+          <li>
+            <button onclick="display_source_code()">View Source Code</button>
+          </li>
+        </div>
+      </ul>
+    </div>
+    <div class="main">
+      We know that you are looking for the very precious piece of
+      information;<br />
+      The Information is loaded successfully.<br />
+      You need to <span>Log in</span> to get it.<br />
+      Good Luck !
+    </div>
+    <div class="log-in-form" style="display: none">
+      <h2>You are Welcome</h2>
+      <h3>
+        use your email to verify your account. A code of validation will be sent
+        to you
+      </h3>
+      <div id="loginForm">
+        <input
+          type="email"
+          name="email"
+          id="email"
+          autocomplete="email"
+          placeholder="example@ee.mail"
+          required
+        />
+        <button
+          type="button"
+          onclick="send_and_display_code_placeholder(event); return false;"
+        >
+          Send code
+        </button>
+
+        <div class="code-placeholder">
+          <label for="codeInput">Enter your validation code</label>
+          <input type="number" name="code" id="codeInput" required />
+          <button type="button" onclick="verify(event)">Verify</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pop-up" style="display: none">
+      <h3>Service Notice</h3>
+      <p>
+        Your verification request was sent, but unfortunately the email sender
+        service is temporarily out of service.
+      </p>
+      <p>We cannot send you the verification code at this moment.</p>
+      <p style="font-size: 0.9em; color: #718096; margin-top: 15px">
+        Figure it out yourself.
+      </p>
+    </div>
+
+    <!-- New source code display modal -->
+    <div class="source-code-modal" style="display: none">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Source Code</h3>
+          <button class="close-modal" onclick="close_source_code()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="image-container">
+            <!-- The image will be inserted here by JavaScript -->
+            <img id="sourceCodeImage" src="" alt="Source Code Image" />
+          </div>
+          <div class="image-info">
+            <p>
+              This image contains the source code for the generation algorithm.
+            </p>
+            <p>
+              Examine it carefully to understand how the verification codes are
+              generated.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>

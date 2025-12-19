@@ -1,0 +1,36 @@
+
+services:
+  # Backend service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.backend
+    container_name: backend
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+    
+    networks:
+      - web-network
+    restart: unless-stopped
+
+  # Frontend service
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: frontend
+    ports:
+      - "5500:5500"
+    depends_on:
+      - backend
+    networks:
+      - web-network
+    restart: unless-stopped
+
+# Network for service communication
+networks:
+  web-network:
+    driver: bridge

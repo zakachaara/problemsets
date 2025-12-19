@@ -1,0 +1,10 @@
+# Backend
+backend/node_modules/
+backend/npm-debug.log*
+
+# Frontend (if you add Node.js tools later)
+node_modules/
+
+# Environment
+.env
+.env.local
