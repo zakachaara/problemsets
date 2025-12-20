@@ -12,12 +12,9 @@
     <div class="nav-bar">
       <ul>
         <li>Home</li>
-        <div id="buttons">
-          <li><button onclick="display_log_in_form()">Log in</button></li>
-          <li>
-            <button onclick="display_source_code()">View Source Code</button>
-          </li>
-        </div>
+        
+        <li><button onclick="display_log_in_form()">Log in</button></li>
+        
       </ul>
     </div>
     <div class="main">
@@ -53,6 +50,9 @@
           <label for="codeInput">Enter your validation code</label>
           <input type="number" name="code" id="codeInput" required />
           <button type="button" onclick="verify(event)">Verify</button>
+        
+            <button onclick="display_source_code()">View Source Code</button>
+          
         </div>
       </div>
     </div>

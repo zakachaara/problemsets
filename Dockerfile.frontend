@@ -3,18 +3,17 @@ FROM python:3.9-alpine
 
 WORKDIR /app
 
-# Install any Python dependencies if needed
-# (Python HTTP server is built-in)
-
 # Copy frontend files
 COPY index.html .
 COPY main.js .
 COPY style.css .
 COPY images/ ./images/
 
+# Copy server launcher
+COPY serve.py .
 
 # Expose frontend port
 EXPOSE 5500
 
-# Start Python HTTP server
-CMD ["python3", "-m", "http.server", "5500"]
+# Start server
+CMD ["python3", "serve.py"]

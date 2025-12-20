@@ -43,8 +43,8 @@ async function releaseLock() {
  * @returns {string} - The generated verification code
  */
 function generateNextCode(seed) {
-    const a = 783129;
-    const b = 1000000;
+    const a = 10007;
+    const b = 1000003;
     const base = seed ? parseInt(seed, 10) : 177218;
     return ((base * a) % b).toString().padStart(6, '0');
 }
