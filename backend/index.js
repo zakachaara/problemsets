@@ -104,8 +104,6 @@ app.get('/send-verification', async (req, res) => {
 
     // await acquireLock();
     try {
-        
-
         // Read current codes from file
         const [oldCode, lastCode] = await readCodeFile();
 
