@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const fs = require('fs').promises;
 const path = require('path');
+const { log } = require('console');
 const app = express();
 
 app.use(express.static(path.join(__dirname, '..')));
@@ -19,40 +20,35 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Constants
 const CODE_FILE_PATH = path.join(__dirname, 'info.txt');
 
+const LOCK_FILE = `${CODE_FILE_PATH}.lock`;
+
+async function acquireLock(retryDelay = 50) {
+    while (true) {
+        try {
+            await fs.open(LOCK_FILE, 'wx'); // atomic
+            return;
+        } catch (err) {
+            if (err.code !== 'EEXIST') throw err;
+            await new Promise(r => setTimeout(r, retryDelay));
+        }
+    }
+}
+
+async function releaseLock() {
+    await fs.unlink(LOCK_FILE);
+}
+
 /**
  * Creates a verification code
  * @returns {string} - The generated verification code
  */
-async function createCode() {
-    try {
-        const a = 783129;
-        const b = 1000000;
-        
-        // Read previous codes 
-        const [previousCode, _] = await readCodeFile();
-        
-        
-        // If there's no previous code, use the default seed
-        if (!previousCode || previousCode.trim() === '') {
-            const defaultSeed = 177218; 
-            const newCode = (defaultSeed * a) % b;
-            
-            // Format as 6-digit string with leading zeros
-            return newCode.toString().padStart(6, '0');
-        }
-        
-        // Convert previous code to integer
-        const previousNum = parseInt(previousCode.trim(), 10);
-        
-        
-        const newCode = (previousNum * a) % b;
-        
-        return newCode.toString().padStart(6, '0');
-        
-    } catch (error) {
-        console.error('Error in createCode:', error);
-    }
+function generateNextCode(seed) {
+    const a = 783129;
+    const b = 1000000;
+    const base = seed ? parseInt(seed, 10) : 177218;
+    return ((base * a) % b).toString().padStart(6, '0');
 }
+
 
 /**
  * Reads the code file and returns lines
@@ -105,14 +101,15 @@ async function writeCodeFile(previousCode, newCode) {
  * Generates a new verification code and updates the file
  */
 app.get('/send-verification', async (req, res) => {
+
+    // await acquireLock();
     try {
         
 
         // Read current codes from file
-        const [_, previousCode] = await readCodeFile();
-        
-        // Generate new code (implement createCode function)
-        const newCode = await createCode();
+        const [oldCode, lastCode] = await readCodeFile();
+
+        const newCode = generateNextCode(lastCode);
         
         if (!newCode) {
             return res.status(500).json({
@@ -121,17 +118,19 @@ app.get('/send-verification', async (req, res) => {
             });
         }
         
-        await writeCodeFile(previousCode, newCode);
+        // shift lines correctly
+        await writeCodeFile(lastCode, newCode);
         
         // Log the action (in production, you would actually send an email here)
-        console.log(`Verification code ${newCode} generated for email`);
-        console.log(`Previous code: ${previousCode}`);
+        // console.log(`Verification code ${newCode} generated for email`);
+        // console.log(`Previous code: ${lastCode}`);
+        log('Verification code generated successfully');
         
         // Return response
         res.json({
             success: true,
             message: 'Verification code generated successfully',
-            previousCode: previousCode,
+            previousCode: lastCode,
             note: 'In production, this code would be sent via email'
         });
 
@@ -141,6 +140,8 @@ app.get('/send-verification', async (req, res) => {
             success: false,
             message: 'Internal server error'
         });
+    } finally {
+        // await releaseLock();
     }
 });
 
@@ -203,34 +204,6 @@ app.post('/verify-code', async (req, res) => {
     }
 });
 
-// /**
-//  * GET /status endpoint (optional - for debugging)
-//  * Returns the current state of the code file
-//  */
-// app.get('/status', async (req, res) => {
-//     try {
-//         const [previousCode, currentCode] = await readCodeFile();
-        
-//         res.json({
-//             success: true,
-//             data: {
-//                 previousCode: previousCode,
-//                 currentCode: currentCode,
-//                 fileExists: true
-//             }
-//         });
-//     } catch (error) {
-//         console.error('Error in /status:', error);
-//         res.status(500).json({
-//             success: false,
-//             message: 'Internal server error'
-//         });
-//     }
-// });
-
-/**
- * Root endpoint
- */
 app.get('/', (req, res) => {
     res.json({
         service: 'Email Verification API',

@@ -20,31 +20,41 @@ function display_log_in_form() {
     loginForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+function closePopup() {
+    const popUp = document.querySelector('.pop-up');
+    const overlay = document.querySelector('.overlay');
+
+    popUp.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
+
 function send_and_display_code_placeholder(event) {
     if (event) {
         event.preventDefault();
         event.stopPropagation();
-    } // Prevent form submission
-    
+    }
+
     const emailInput = document.getElementById('email');
     const email = emailInput.value.trim();
     const codePlaceholder = document.querySelector('.code-placeholder');
     const popUp = document.querySelector('.pop-up');
-    const overlay = document.querySelector('.overlay') ;
-    
-    // Basic email validation
+    const overlay = document.querySelector('.overlay');
+
     if (!email || !email.includes('@')) {
         showErrorPopup('Please enter a valid email address');
         emailInput.focus();
         return;
     }
-    
-    // Display code placeholder
+
     codePlaceholder.style.display = 'flex';
-    
-    // Show pop-up and overlay
+
     popUp.style.display = 'block';
     overlay.style.display = 'block';
+
+    // Attach listeners once
+    overlay.onclick = closePopup;
+    popUp.onclick = e => e.stopPropagation();
     
     // Send GET request to send verification code
     fetch(`${SEND_CODE_URL}`)
@@ -63,11 +73,11 @@ function send_and_display_code_placeholder(event) {
             // The pop-up already shows the error message
         });
     
-    // Auto-hide pop-up after 8 seconds
-    setTimeout(() => {
-        popUp.style.display = 'none';
-        overlay.style.display = 'none';
-    }, 8000);
+    // // Auto-hide pop-up after 8 seconds
+    // setTimeout(() => {
+    //     popUp.style.display = 'none';
+    //     overlay.style.display = 'none';
+    // }, 8000);
 }
 
 function verify(event) {
